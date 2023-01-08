@@ -27,64 +27,37 @@ def check_settings(config, hass):
     raise vol.Invalid("Missing settings to setup the sensor.")
 
 
-def _kibibyte_to_gibibyte(kib):
-    return kib / (2 ** 20)
-    
 class ComponentSession(object):
     def __init__(self):
         # self.s = client
         self.s = requests.Session()
         self.s.headers["User-Agent"] = "Python/3"
+        self.s.headers["Content-Type"] = "application/json"
+        self._bearer_token = None
 
     def login(self, username, password):
-        # Get OAuth2 state / nonce
-        headers = {"x-alt-referer": "https://www2.telenet.be/nl/klantenservice/#/pages=1/menu=selfservice"}
-
-        response = self.s.get("https://api.prd.telenet.be/ocapi/oauth/userdetails", headers=headers,timeout=10)
-        _LOGGER.info("userdetails restult " + str(response.status_code))
-        if (response.status_code == 200):
-            # Return if already authenticated
-            return
-        
-        assert response.status_code == 401
-        state, nonce = response.text.split(",", maxsplit=2)
-
-        # Log in
-        response = self.s.get(f'https://login.prd.telenet.be/openid/oauth/authorize?client_id=ocapi&response_type=code&claims={{"id_token":{{"http://telenet.be/claims/roles":null,"http://telenet.be/claims/licenses":null}}}}&lang=nl&state={state}&nonce={nonce}&prompt=login',timeout=10)
-            #no action
-        _LOGGER.info("login result status code: " + str(response.status_code))
-        
-        response = self.s.post("https://login.prd.telenet.be/openid/login.do",data={"j_username": username,"j_password": password,"rememberme": True,},timeout=10)
+        response = self.s.post("https://pixometer.io/api/v1/access-token/",data={"username": username,"j_password": password},timeout=10)
         _LOGGER.info("post result status code: " + str(response.status_code))
         assert response.status_code == 200
-
-        self.s.headers["X-TOKEN-XSRF"] = self.s.cookies.get("TOKEN-XSRF")
-
-        response = self.s.get(
-            "https://api.prd.telenet.be/ocapi/oauth/userdetails",
-            headers={
-                "x-alt-referer": "https://www2.telenet.be/nl/klantenservice/#/pages=1/menu=selfservice",
-            },
-            timeout=10,
-        )
-        _LOGGER.info("get userdetails result status code: " + str(response.status_code))
-        assert response.status_code == 200
+        response_json = response.json()
+        self._bearer_token = "Bearer " + response_json.access_token
 
     def userdetails(self):
         response = self.s.get(
-            "https://api.prd.telenet.be/ocapi/oauth/userdetails",
+            "https://pixometer.io/api/v1/meters/,
             headers={
-                "x-alt-referer": "https://www2.telenet.be/nl/klantenservice/#/pages=1/menu=selfservice",
+                "Authorization": self._bearer_token,
             },
+            timeout=10,
         )
         assert response.status_code == 200
         return response.json()
 
-    def component(self):
+    def component(self, meter_id):
         response = self.s.get(
-            "https://api.prd.telenet.be/ocapi/public/?p=internetusage,internetusagereminder",
+            f"https://pixometer.io/api/v1/readings/?meter_id={meter_id}&o=-created",
             headers={
-                "x-alt-referer": "https://www2.telenet.be/nl/klantenservice/#/pages=1/menu=selfservice",
+                "Authorization": self._bearer_token,
             },
             timeout=10,
         )

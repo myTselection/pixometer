@@ -77,7 +77,6 @@ class ComponentData:
         self._username = username
         self._password = password
         self._client = client
-        self._data = {}
         self._last_update = None
         self._friendly_name = None
         self._session = ComponentSession()
