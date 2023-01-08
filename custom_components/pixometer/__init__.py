@@ -26,7 +26,7 @@ If you have any issues with this you need to open an issue here:
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup(hass, config):
+async def async_setup(hass: HomeAssistant, config: dict):
     """Set up this component using YAML."""
     _LOGGER.info(STARTUP)
     if config.get(DOMAIN) is None:

@@ -49,9 +49,7 @@ async def dry_setup(hass, config_entry, async_add_devices):
     async_add_devices(sensors)
 
 
-async def async_setup_platform(
-    hass, config_entry, async_add_devices, discovery_info=None
-):
+async def async_setup_platform(hass, config_entry, async_add_devices, discovery_info=None):
     """Setup sensor platform for the ui"""
     _LOGGER.info("async_setup_platform " + NAME)
     await dry_setup(hass, config_entry, async_add_devices)
@@ -64,7 +62,6 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
     config = config_entry.data
     await dry_setup(hass, config, async_add_devices)
     return True
-
 
 async def async_remove_entry(hass, config_entry):
     _LOGGER.info("async_remove_entry " + NAME)
