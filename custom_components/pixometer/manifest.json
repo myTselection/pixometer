@@ -1,0 +1,11 @@
+{
+  "codeowners": ["@myTselection"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/myTselection/pixometer",
+  "domain": "pixometer",
+  "iot_class": "Cloud Polling",
+  "name": "Pixometer",
+  "requirements": [],
+  "version": "0.0.1"
+}
