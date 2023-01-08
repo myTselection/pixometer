@@ -42,7 +42,7 @@ async def dry_setup(hass, config_entry, async_add_devices):
 
     meter_list = await data.initiate()
     
-    for meter_details in self._meter_list.get("results"):
+    for meter_details in meter_list.get("results"):
         sensors = []
         meter_reading = await data.update(meter_details.get("meter_id"))
         sensor = Component(data, meter_details, meter_reading, hass)
@@ -92,17 +92,18 @@ class ComponentData:
 
         if self._session:
             await self._hass.async_add_executor_job(lambda: self._session.login(self._username, self._password))
-            _LOGGER.info("login completed" + NAME)
+            _LOGGER.info("login completed " + NAME)
             self._meter_list = None
             self._meter_list = await self._hass.async_add_executor_job(lambda: self._session.meterlist())
-            _LOGGER.info("meter list retrieved " + NAME)                
+            _LOGGER.info("meter list retrieved " + NAME)    
+            assert self._meter_list is not None
 
     async def initiate(self):
         await self._initiate()
         return self._meter_list
         
     async def update(self, meter_id):
-        meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readingss(meter_id))
+        meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readings(meter_id))
         _LOGGER.info(f"updated meter readings for {NAME} - meter id: {meter_id}") 
         assert meter_readings is not None
         return meter_readings.get("results")[0]
@@ -121,7 +122,7 @@ class Component(Entity):
         return self._meter_reading.get("value")
 
     async def async_update(self):
-        self._meter_reading = await self._data.update(self._meter_details.get("meter_id")
+        self._meter_reading = await self._data.update(self._meter_details.get("meter_id"))
         
         
     async def async_will_remove_from_hass(self):
