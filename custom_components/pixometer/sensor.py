@@ -37,16 +37,17 @@ async def dry_setup(hass, config_entry, async_add_devices):
     data = ComponentData(
         username,
         password,
-        async_get_clientsession(hass),
         hass
     )
 
-    await data.update()
-    sensors = []
-    sensor = Component(data, hass)
-    sensors.append(sensor)
-
-    async_add_devices(sensors)
+    meter_list = await data.initiate()
+    
+    for meter_details in self._meter_list.get("results"):
+        sensors = []
+        meter_reading = await data.update(meter_details.get("meter_id"))
+        sensor = Component(data, meter_details, meter_reading, hass)
+        sensors.append(sensor)
+        async_add_devices(sensors)
 
 
 async def async_setup_platform(hass, config_entry, async_add_devices, discovery_info=None):
@@ -73,55 +74,59 @@ async def async_remove_entry(hass, config_entry):
         
 
 class ComponentData:
-    def __init__(self, username, password, client, hass):
+    def __init__(self, username, password, hass):
         self._username = username
         self._password = password
-        self._client = client
         self._last_update = None
         self._friendly_name = None
         self._session = ComponentSession()
-        self._component = None
+        self._meter_list = None
         self._hass = hass
+        self._meter_readings = []
         
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    async def _update(self):
+    async def _initiate(self):
         _LOGGER.info("Fetching stuff for " + NAME)
         if not(self._session):
             self._session = ComponentSession()
 
         if self._session:
             await self._hass.async_add_executor_job(lambda: self._session.login(self._username, self._password))
-            _LOGGER.info("login completed")
-            self._component = await self._hass.async_add_executor_job(lambda: self._session.component())
-            _LOGGER.debug(f"component data: {self._component}" + NAME)
+            _LOGGER.info("login completed" + NAME)
+            self._meter_list = None
+            self._meter_list = await self._hass.async_add_executor_job(lambda: self._session.meterlist())
+            _LOGGER.info("meter list retrieved " + NAME)                
 
-    async def update(self):
-        await self._update()
-        return self._component
-    
-    def clear_session():
-        self._session : None
-
+    async def initiate(self):
+        await self._initiate()
+        return self._meter_list
+        
+    async def update(self, meter_id):
+        meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readingss(meter_id))
+        _LOGGER.info(f"updated meter readings for {NAME} - meter id: {meter_id}") 
+        assert meter_readings is not None
+        return meter_readings.get("results")[0]
 
 
 class Component(Entity):
-    def __init__(self, data, hass):
+    def __init__(self, data, meter_details, meter_reading, hass):
         self._data = data
+        self._meter_details = meter_details
+        self._meter_reading = meter_reading
         self._hass = hass
 
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self._used_percentage
+        return self._meter_reading.get("value")
 
     async def async_update(self):
-        await self._data.update()
+        self._meter_reading = await self._data.update(self._meter_details.get("meter_id")
         
         
     async def async_will_remove_from_hass(self):
         """Clean up after entity before removal."""
         _LOGGER.info("async_will_remove_from_hass " + NAME)
-        self._data.clear_session()
 
 
     @property
@@ -135,8 +140,7 @@ class Component(Entity):
     def unique_id(self) -> str:
         """Return the name of the sensor."""
         return (
-            # NAME + f"_{self._data._username.replace('-', '_')}"
-            NAME
+            NAME + f"_{self._meter_details.get('location_in_building').replace('-', '_')}"
         )
 
     @property
@@ -148,7 +152,12 @@ class Component(Entity):
         """Return the state attributes."""
         return {
             ATTR_ATTRIBUTION: NAME,
-            "last update": self._last_update
+            "last update": self._meter_reading.get("reading_date"),
+            "physical_medium": self._meter_details.get("physical_medium"),
+            "physical_unit": self._meter_details.get("physical_unit"),
+            "meter_id": self._meter_details.get("meter_id"),
+            "description": self._meter_details.get("description"),
+            "image": self._meter_reading.get("image_meta").get("image")
         }
 
     @property
@@ -168,7 +177,7 @@ class Component(Entity):
     @property
     def unit_of_measurement(self) -> str:
         """Return the unit of measurement this sensor expresses itself in."""
-        return "%"
+        return self._meter_details.get("physical_unit")
 
     @property
     def friendly_name(self) -> str:

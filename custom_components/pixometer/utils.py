@@ -36,15 +36,17 @@ class ComponentSession(object):
         self._bearer_token = None
 
     def login(self, username, password):
-        response = self.s.post("https://pixometer.io/api/v1/access-token/",data={"username": username,"j_password": password},timeout=10)
+        header = {"Content-Type": "application/json"}
+        response = self.s.post("https://pixometer.io/api/v1/access-token/",data='{"username": "'+username+'","password": "'+password+'"}',headers=header,timeout=10)
         _LOGGER.info("post result status code: " + str(response.status_code))
+        _LOGGER.debug("post result response: " + str(response.text))
         assert response.status_code == 200
         response_json = response.json()
-        self._bearer_token = "Bearer " + response_json.access_token
+        self._bearer_token = "Bearer " + response_json.get("access_token")
 
-    def userdetails(self):
+    def meterlist(self):
         response = self.s.get(
-            "https://pixometer.io/api/v1/meters/,
+            "https://pixometer.io/api/v1/meters/",
             headers={
                 "Authorization": self._bearer_token,
             },
@@ -53,9 +55,8 @@ class ComponentSession(object):
         assert response.status_code == 200
         return response.json()
 
-    def component(self, meter_id):
-        response = self.s.get(
-            f"https://pixometer.io/api/v1/readings/?meter_id={meter_id}&o=-created",
+    def meter_readings(self, meter_id):
+        response = self.s.get("https://pixometer.io/api/v1/readings/?meter_id=" + str(meter_id) + "&o=-created",
             headers={
                 "Authorization": self._bearer_token,
             },
