@@ -39,7 +39,7 @@ class ComponentSession(object):
         header = {"Content-Type": "application/json"}
         response = self.s.post("https://pixometer.io/api/v1/access-token/",data='{"username": "'+username+'","password": "'+password+'"}',headers=header,timeout=10)
         _LOGGER.debug("post result status code: " + str(response.status_code))
-        _LOGGER.debug("post result response: " + str(response.text))
+        _LOGGER.info("post result response: " + str(response.text))
         assert response.status_code == 200
         response_json = response.json()
         self._bearer_token = "Bearer " + response_json.get("access_token")
@@ -63,6 +63,6 @@ class ComponentSession(object):
             timeout=10,
         )
         _LOGGER.debug(" result status code: " + str(response.status_code))
-        _LOGGER.debug(" result " + response.text)
+        _LOGGER.info(" result " + response.text)
         assert response.status_code == 200
         return response.json()
