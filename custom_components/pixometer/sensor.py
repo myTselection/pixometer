@@ -82,7 +82,7 @@ class ComponentData:
         self._session = ComponentSession()
         self._meter_list = None
         self._hass = hass
-        self._meter_readings = []
+        self._meter_readings = dict
         
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def _initiate(self):
@@ -104,22 +104,22 @@ class ComponentData:
         
     async def init_meter_readings(self, meter_id):
         meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readings(meter_id))
-        _LOGGER.info(f"updated meter readings for {NAME} - meter id: {meter_id}") 
+        _LOGGER.info(f"init meter readings for {NAME} - meter id: {meter_id}") 
         assert meter_readings is not None
+        self._meter_readings[meter_id] = meter_readings.get("results")[0]
         return meter_readings.get("results")[0]
         
-    # @Throttle(MIN_TIME_BETWEEN_UPDATES)
+    @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def _update(self, meter_id):
         meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readings(meter_id))
         _LOGGER.info(f"updated meter readings for {NAME} - meter id: {meter_id}") 
         assert meter_readings is not None
-        return meter_readings.get("results")[0]
+        self._meter_readings[meter_id] = meter_readings.get("results")[0]
         
     async def update(self, meter_id):
-        result = await self._update(meter_id)
-        _LOGGER.info(f"updated meter readings for {NAME} - meter id: {meter_id} - result: {result}") 
-        assert result is not None
-        return result
+        await self._update(meter_id)
+        _LOGGER.info(f"updated meter readings for {NAME} - meter id: {meter_id} - result: {self._meter_readings.get(meter_id)}") 
+        return self._meter_readings.get(meter_id)
 
 
 class Component(Entity):
@@ -127,6 +127,7 @@ class Component(Entity):
         self._data = data
         self._meter_details = meter_details
         self._meter_reading = meter_reading
+        self._meter_id = self._meter_details.get("meter_id")
         self._hass = hass
 
     @property
@@ -135,7 +136,7 @@ class Component(Entity):
         return self._meter_reading.get("value")
 
     async def async_update(self):
-        self._meter_reading = await self._data.update(self._meter_details.get("meter_id"))
+        self._meter_reading = await self._data.update(self._meter_id )
         
         
     async def async_will_remove_from_hass(self):

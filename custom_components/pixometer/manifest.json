@@ -7,5 +7,5 @@
   "iot_class": "Cloud Polling",
   "name": "Pixometer",
   "requirements": [],
-  "version": "0.0.1"
+  "version": "0.0.5"
 }
