@@ -82,7 +82,7 @@ class ComponentData:
         self._session = ComponentSession()
         self._meter_list = None
         self._hass = hass
-        self._meter_readings = dict
+        self._meter_readings = dict()
         
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def _initiate(self):
