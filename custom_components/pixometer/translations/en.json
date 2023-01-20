@@ -3,7 +3,6 @@
         "title": "Pixometer",
         "step": {
             "user": {
-                "title": "Pixometer",
                 "description": "Setup a sensor, username and password are required.",
                 "data": {
                     "username": "Username",
