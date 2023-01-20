@@ -8,5 +8,6 @@
   "name": "Pixometer",
   "requirements": [],
   "version": "0.1.0",
-  "issue_tracker": "https://github.com/myTselection/pixometer/issues"
+  "issue_tracker": "https://github.com/myTselection/pixometer/issues",
+  "integration_type": "entity"
 }
