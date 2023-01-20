@@ -128,3 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /*.url
+/custom_components/pixometer/pixometer
