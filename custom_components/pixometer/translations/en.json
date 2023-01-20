@@ -11,7 +11,6 @@
                 }
             },
             "edit": {
-                "title": "Pixometer",
                 "description": "Edit a sensor, username and password are required.",
                 "data": {
                     "username": "Username",
@@ -30,7 +29,6 @@
     "options": {
         "step": {
             "edit": {
-                "title": "Pixometer",
                 "description": "Edit setup a sensor, username and password are required.",
                 "data": {
                     "username": "Username",
