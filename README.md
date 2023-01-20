@@ -17,14 +17,29 @@ Pixometer account creation: https://pixometer.io/portal/#/login
 - Provide Pixometer username and password
 - A sensor Pixometer should become available per meter with last reading as state and further details as attribute.
 
-## TODO
-- Add logo
-- Add 'reload' option
-- Register repo as standard HACS repo
+## Status
+Still some optimisations are planned, see [Issues](https://github.com/myTselection/pixometer/issues) section in GitHub.
 
 ## Example usage:
-### TODO
-```
+For each meter, a sensor will be created in HA.
+Myself, I still have a fuel oil installation which has no meter similar to gas meter. I only have a televar indicating the percentage of oil currently available in the tank.
+
+At a regular interval I do keep track of this percentage of oil within a Pixometer meter reading. 
+
+Next, with a template sensor, I convert the percentage of tank content into a total number of kWh used so far:
+- Within a HA variable `input_number.mazout_bijvullingen`, I keep track of the total number of liters orderd to fill the oil tank. 
+- But since not all of this total orderd oil is already consumed, I substract the number of liters still available in the tank to know the total number of used liter of fuel. 
+- The number of liters left in the tank is calculated based on the percentage left in the tank and the max capacity of the tank (5000l)
+- The number of liters used is then converted from liters into kWh by multipling by 10.641.
+
+Configuration as a template sensor in `configuration.yaml`
 
 ```
-<p align="center"><img src="https://github.com/myTselection/pixometer/blob/main/example.png"/></p>
+sensor: 
+  - platform: template
+    sensors:
+      mazout_pixometer:
+        value_template: "{{ ((states.input_number.mazout_bijvullingen.state|float - 5000) + (5000 * (100 - states('sensor.pixometer_mazout_televar_thuis')|float)/100)) * 10.641}}"
+        device_class: gas
+        unit_of_measurement: kWh
+```
