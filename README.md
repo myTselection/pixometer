@@ -5,7 +5,7 @@
 discussion [Home Assistant Forum](https://community.home-assistant.io/t/pixometer-integration/285608)
 
 Pixometer account creation: https://pixometer.io/portal/#/login 
-<p align="right"><img src="https://github.com/myTselection/pixometer/blob/main/logo.png" width="128"/></p>
+<p align="right"><img src="https://raw.githubusercontent.com/myTselection/pixometer/master/logo.png" width="128"/></p>
 <!-- <p align="center"><img src="https://github.com/myTselection/pixometer/blob/main/Gauge%20Card%20Configuration.png"/></p> -->
 
 
