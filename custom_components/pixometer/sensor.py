@@ -42,12 +42,12 @@ async def dry_setup(hass, config_entry, async_add_devices):
 
     meter_list = await data.initiate()
     
+    sensors = []
     for meter_details in meter_list.get("results"):
-        sensors = []
         meter_reading = await data.init_meter_readings(meter_details.get("meter_id"))
         sensor = Component(data, meter_details, meter_reading, hass)
         sensors.append(sensor)
-        async_add_devices(sensors)
+    async_add_devices(sensors)
 
 
 async def async_setup_platform(hass, config_entry, async_add_devices, discovery_info=None):
