@@ -7,7 +7,7 @@
   "iot_class": "cloud_polling",
   "name": "Pixometer",
   "requirements": [],
-  "version": "0.1.0",
+  "version": "1.0.1",
   "issue_tracker": "https://github.com/myTselection/pixometer/issues",
-  "integration_type": "entity"
+  "integration_type": "hub"
 }

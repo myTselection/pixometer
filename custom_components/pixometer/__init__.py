@@ -6,7 +6,7 @@ from homeassistant.core import Config, HomeAssistant
 
 DOMAIN = "pixometer"
 NAME = "Pixometer"
-VERSION = "0.1.0"
+VERSION = "1.0.1"
 ISSUEURL = "https://github.com/myTselection/pixometer/issues"
 
 STARTUP = """
