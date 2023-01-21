@@ -1,13 +1,19 @@
 import logging
+import json
+from pathlib import Path
 
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 
-DOMAIN = "pixometer"
-NAME = "Pixometer"
-VERSION = "1.0.1"
-ISSUEURL = "https://github.com/myTselection/pixometer/issues"
+manifestfile = Path(__file__).parent / 'manifest.json'
+with open(manifestfile, 'r') as json_file:
+    manifest_data = json.load(json_file)
+    
+DOMAIN = manifest_data.get("domain")
+NAME = manifest_data.get("name")
+VERSION = manifest_data.get("version")
+ISSUEURL = manifest_data.get("issue_tracker")
 
 STARTUP = """
 -------------------------------------------------------------------
