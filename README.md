@@ -1,10 +1,15 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 
-# Pixometer (Beta)
-[Pixometer](https://pixometer.io/info/) Home Assistant custom component. With Pixometer, a mobile app and scan solutions is available for intuitive and efficient meter reading registration.
-discussion [Home Assistant Forum](https://community.home-assistant.io/t/pixometer-integration/285608)
+# Pixometer
+[Pixometer](https://pixometer.io/info/) Home Assistant custom component. With Pixometer, a mobile app and scan solutions is available for intuitive and efficient meter reading registration. This custom component has been built from the ground up to bring your Pixometer scaned engery meter usage details into Home Assistant to help you towards a better follow up on your usage information. This integration is built against the public website provided by Pixolus Pixometer.
+
+This integration is in no way affiliated with Pixolus or Pixmeter.
+
+Some discussion on this topic can be found within the community discussion [Home Assistant Forum](https://community.home-assistant.io/t/pixometer-integration/285608)
 
 Pixometer account creation: https://pixometer.io/portal/#/login 
+
+Pixometer app [Android](https://play.google.com/store/apps/details?id=com.pixolus.pixometer) / [iPhone](https://apps.apple.com/app/apple-store/id934332635)
 <p align="right"><img src="https://raw.githubusercontent.com/myTselection/pixometer/master/logo.png" width="128"/></p>
 <!-- <p align="center"><img src="https://github.com/myTselection/pixometer/blob/main/Gauge%20Card%20Configuration.png"/></p> -->
 
