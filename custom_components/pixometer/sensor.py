@@ -169,7 +169,7 @@ class Component(Entity):
             ATTR_ATTRIBUTION: NAME,
             "last update": self._meter_reading.get("reading_date"),
             "physical_medium": self._meter_details.get("physical_medium"),
-            "physical_unit": self._meter_details.get("physical_unit"),
+            "physical_unit": self._meter_details.get("physical_unit").replace("^3","³").replace("^2","²"),
             "meter_id": self._meter_details.get("meter_id"),
             "description": self._meter_details.get("description"),
             "image": self._meter_reading.get("image_meta").get("image")
@@ -192,7 +192,7 @@ class Component(Entity):
     @property
     def unit_of_measurement(self) -> str:
         """Return the unit of measurement this sensor expresses itself in."""
-        return self._meter_details.get("physical_unit")
+        return self._meter_details.get("physical_unit").replace("^3","³").replace("^2","²")
 
     @property
     def friendly_name(self) -> str:
