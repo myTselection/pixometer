@@ -84,8 +84,7 @@ class ComponentData:
         self._hass = hass
         self._meter_readings = dict()
         
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    async def _initiate(self):
+    async def initiate(self):
         _LOGGER.info("Fetching stuff for " + NAME)
         if not(self._session):
             self._session = ComponentSession()
@@ -97,9 +96,6 @@ class ComponentData:
             self._meter_list = await self._hass.async_add_executor_job(lambda: self._session.meterlist())
             _LOGGER.debug("meter list retrieved " + NAME)    
             assert self._meter_list is not None
-
-    async def initiate(self):
-        await self._initiate()
         return self._meter_list
         
     async def init_meter_readings(self, meter_id):
@@ -111,10 +107,15 @@ class ComponentData:
         
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def _update(self, meter_id):
-        meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readings(meter_id))
-        _LOGGER.debug(f"updated meter readings for {NAME} - meter id: {meter_id}") 
-        assert meter_readings is not None
-        self._meter_readings[meter_id] = meter_readings.get("results")[0]
+        if not(self._session):
+            self._session = ComponentSession()
+
+        if self._session:
+            await self._hass.async_add_executor_job(lambda: self._session.login(self._username, self._password))
+            meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readings(meter_id))
+            _LOGGER.debug(f"updated meter readings for {NAME} - meter id: {meter_id}") 
+            assert meter_readings is not None
+            self._meter_readings[meter_id] = meter_readings.get("results")[0]
         
     async def update(self, meter_id):
         await self._update(meter_id)
