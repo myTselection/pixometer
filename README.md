@@ -1,4 +1,4 @@
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![HACS Default](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/default)
 [![GitHub release](https://img.shields.io/github/release/myTselection/pixometer.svg)](https://github.com/myTselection/pixometer/releases)
 ![GitHub repo size](https://img.shields.io/github/repo-size/myTselection/pixometer.svg)
 
@@ -22,7 +22,7 @@ Pixometer app [Android](https://play.google.com/store/apps/details?id=com.pixolu
 
 ## Installation
 - Make sure you have a free [Pixometer account](https://pixometer.io/portal/#/login) created
-- [HACS](https://hacs.xyz/): add url https://github.com/myTselection/pixometer as custom repository (HACS > Integration > option: Custom Repositories)
+- [HACS](https://hacs.xyz/): HACS > Integration > search for Pixometer and install
 - Restart Home Assistant
 - Add 'Pixometer' integration via HA Settings > 'Devices and Services' > 'Integrations'
 - Provide Pixometer username and password
