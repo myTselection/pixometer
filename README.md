@@ -6,7 +6,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/myTselection/pixometer.svg)](https://github.com/myTselection/pixometer/commits/master)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/myTselection/pixometer.svg)](https://github.com/myTselection/pixometer/graphs/commit-activity)
 
-# Pixometer
+# Pixometer Home Assistant integration
 [Pixometer](https://pixometer.io/info/) Home Assistant custom component. With Pixometer, a mobile app and scan solutions is available for intuitive and efficient meter reading registration. This custom component has been built from the ground up to bring your Pixometer scaned engery meter usage details into Home Assistant to help you towards a better follow up on your usage information. This integration is built against the public website provided by Pixolus Pixometer.
 
 This integration is in no way affiliated with Pixolus or Pixmeter.
