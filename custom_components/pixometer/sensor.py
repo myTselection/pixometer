@@ -147,10 +147,15 @@ class Component(Entity):
 
     @property
     def icon(self) -> str:
-        """Shows the correct icon for container."""
-        return "mdi:check-network-outline"
-        #alternative: 
-        #return "mdi:wifi_tethering_error"
+        """Return icon based on physical_medium."""
+        icon = "mdi:check-network-outline"
+        if self._meter_details.get("physical_medium") == "electricity":
+            icon = "mdi:flash"
+        if self._meter_details.get("physical_medium") == "gas":
+            icon = "mdi:radiator"
+        if self._meter_details.get("physical_medium") == "water":
+            icon = "mdi:water-pump"
+        return icon
         
     @property
     def unique_id(self) -> str:
