@@ -9,6 +9,7 @@ from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
+from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
 
 from . import DOMAIN, NAME
 from .utils import *
@@ -204,3 +205,25 @@ class Component(Entity):
     def friendly_name(self) -> str:
         return self.unique_id
         
+    @property
+    def device_class(self) -> str:
+        device_class = None
+        if self._meter_details.get("physical_medium") == "electricity":
+            device_class = SensorDeviceClass.ENERGY
+        if self._meter_details.get("physical_medium") == "gas":
+            device_class = SensorDeviceClass.GAS
+        if self._meter_details.get("physical_medium") == "water":
+            device_class = SensorDeviceClass.WATER
+        return device_class
+    
+    @property
+    def state_class(self) -> str:
+        state_class = None
+        if self.device_class == SensorDeviceClass.GAS or self.device_class == SensorDeviceClass.WATER:
+            # Gas and Water meters can only increase. A lower value means the meter has been replaced.
+            state_class = SensorStateClass.TOTAL_INCREASING
+        if self.device_class == SensorDeviceClass.ENERGY:
+            # Recent electricity meters can only increase. But pixometer is used to read old meters, and
+            # old meters can decrease e.g. when supplying current to the grid.
+            state_class = SensorStateClass.TOTAL
+        return state_class
