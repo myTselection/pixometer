@@ -7,7 +7,7 @@ import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity import DeviceInfo, Entity
 from homeassistant.util import Throttle
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
 
@@ -183,13 +183,15 @@ class Component(Entity):
         }
 
     @property
-    def device_info(self) -> dict:
-        """I can't remember why this was needed :D"""
-        return {
-            "identifiers": {(DOMAIN, self.unique_id)},
-            "name": self.name,
-            "manufacturer": DOMAIN,
-        }
+    def device_info(self) -> DeviceInfo:
+        """Return the device info."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.unique_id)},
+            name=self.name,
+            manufacturer="pixolus GmbH",
+            suggested_area=self._meter_details.get("location_in_building"),
+            configuration_url=f"https://pixometer.io/portal/#/meters/{self._meter_details.get('resource_id')}/edit",
+        )
 
     @property
     def unit(self) -> int:
