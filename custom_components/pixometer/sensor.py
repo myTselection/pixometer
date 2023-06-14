@@ -165,9 +165,15 @@ class Component(Entity):
             f"{NAME} {self._meter_details.get('location_in_building').replace('-', '_')}"
         )
 
+
     @property
-    def name(self) -> str:  
-        return self.unique_id
+    def has_entity_name(self) -> bool:
+        return True
+
+    @property
+    def name(self) -> str:
+        """Return the name of the sensor."""
+        return None
 
     @property
     def extra_state_attributes(self) -> dict:
