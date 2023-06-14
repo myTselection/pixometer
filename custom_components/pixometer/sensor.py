@@ -160,10 +160,8 @@ class Component(Entity):
         
     @property
     def unique_id(self) -> str:
-        """Return the name of the sensor."""
-        return (
-            f"{NAME} {self._meter_details.get('location_in_building').replace('-', '_')}"
-        )
+        """Return the unique ID of the sensor."""
+        return self._meter_details.get('resource_id')
 
     @property
     def name(self) -> str:  
