@@ -193,7 +193,7 @@ class Component(Entity):
         """Return the device info."""
         name = self._meter_details.get("label")
         if name == "" or name is None:
-            name = self._meter_details.get("location_in_building")
+            name = f"{NAME} {self._meter_details.get('location_in_building').replace('-', '_')}"
         return DeviceInfo(
             identifiers={(DOMAIN, self.unique_id)},
             name=name,
