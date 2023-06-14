@@ -185,9 +185,12 @@ class Component(Entity):
     @property
     def device_info(self) -> DeviceInfo:
         """Return the device info."""
+        name = self._meter_details.get("label")
+        if name == "" or name is None:
+            name = self._meter_details.get("location_in_building")
         return DeviceInfo(
             identifiers={(DOMAIN, self.unique_id)},
-            name=self.name,
+            name=name,
             manufacturer="pixolus GmbH",
             suggested_area=self._meter_details.get("location_in_building"),
             configuration_url=f"https://pixometer.io/portal/#/meters/{self._meter_details.get('resource_id')}/edit",
