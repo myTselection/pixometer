@@ -166,8 +166,12 @@ class Component(Entity):
         )
 
     @property
-    def name(self) -> str:  
-        return self.unique_id
+    def name(self) -> str:
+        """Return the name of the sensor."""
+        name = self._meter_details.get("label")
+        if name == "" or name is None:
+            name = self._meter_details.get("location_in_building")
+        return f"{NAME} {name}"
 
     @property
     def extra_state_attributes(self) -> dict:
