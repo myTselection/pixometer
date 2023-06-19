@@ -26,7 +26,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 )
 
 #TODO check if needed
-MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=2)
+MIN_TIME_BETWEEN_UPDATES = timedelta(hours=1)
 
 
 async def dry_setup(hass, config_entry, async_add_devices):
@@ -41,7 +41,6 @@ async def dry_setup(hass, config_entry, async_add_devices):
         hass
     )
 
-    # meter_list = await data.initiate()
     meter_list = await data._init_meter_list()
     
     for meter_details in meter_list.get("results"):
@@ -85,41 +84,9 @@ class ComponentData:
         self._meter_list = None
         self._hass = hass
         self._meter_readings = dict()
-        
-    # async def initiate(self):
-    #     _LOGGER.info("Fetching stuff for " + NAME)
-    #     if not(self._session):
-    #         self._session = ComponentSession()
-
-    #     if self._session:
-    #         await self._hass.async_add_executor_job(lambda: self._session.login(self._username, self._password))
-    #         _LOGGER.debug("login completed " + NAME)
-    #         self._meter_list = None
-    #         self._meter_list = await self._hass.async_add_executor_job(lambda: self._session.meterlist())
-    #         _LOGGER.debug("meter list retrieved " + NAME)    
-    #         assert self._meter_list is not None
-    #     return self._meter_list
-        
-        
-    # @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    # async def _update(self, meter_id):
-    #     if not(self._session):
-    #         self._session = ComponentSession()
-
-    #     if self._session:
-    #         await self._hass.async_add_executor_job(lambda: self._session.login(self._username, self._password))
-    #         meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readings(meter_id))
-    #         _LOGGER.debug(f"updated meter readings for {NAME} - meter id: {meter_id}") 
-    #         assert meter_readings is not None
-    #         self._meter_readings[meter_id] = meter_readings.get("results")[0]
-        
-    # async def update(self, meter_id):
-    #     await self._update(meter_id)
-    #     _LOGGER.debug(f"updated meter readings for {NAME} - meter id: {meter_id} - result: {self._meter_readings.get(meter_id)}") 
-    #     return self._meter_readings.get(meter_id)
     
     async def _init_meter_list(self):
-        _LOGGER.info("Forced updated for " + NAME)
+        _LOGGER.info("Init meter list for " + NAME)
         if not(self._session):
             self._session = ComponentSession()
 
@@ -128,14 +95,14 @@ class ComponentData:
             _LOGGER.debug("login completed " + NAME)
             self._meter_list = None
             self._meter_list = await self._hass.async_add_executor_job(lambda: self._session.meterlist())
-            _LOGGER.debug("meter list retrieved " + NAME)    
+            _LOGGER.debug(f"meter list retrieved {NAME}: {self._meter_list}")    
             assert self._meter_list is not None
             return self._meter_list
 
 
     # same as update, but without throttle to make sure init is always executed
     async def _forced_update(self):
-        _LOGGER.info("Forced updated for " + NAME)
+        _LOGGER.info("Updated for " + NAME)
         if not(self._session):
             self._session = ComponentSession()
 
@@ -149,10 +116,9 @@ class ComponentData:
     
     async def update_meter_readings(self, meter_id):
         meter_readings = await self._hass.async_add_executor_job(lambda: self._session.meter_readings(meter_id))
-        _LOGGER.info(f"init meter readings for {NAME} - meter id: {meter_id}") 
+        _LOGGER.debug(f"update meter readings for {NAME} - meter id: {meter_id}") 
         assert meter_readings is not None
         self._meter_readings[meter_id] = meter_readings.get("results")[0]
-        return meter_readings.get("results")[0]
                 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def _update(self):
