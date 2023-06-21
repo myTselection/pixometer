@@ -119,6 +119,7 @@ class ComponentData:
         _LOGGER.debug(f"update meter readings for {NAME} - meter id: {meter_id}") 
         assert meter_readings is not None
         self._meter_readings[meter_id] = meter_readings.get("results")[0]
+        return meter_readings.get("results")[0]
                 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def _update(self):
