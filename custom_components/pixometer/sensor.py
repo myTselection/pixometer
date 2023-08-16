@@ -138,6 +138,16 @@ class Component(Entity):
         self._meter_reading = meter_reading
         self._meter_id = self._meter_details.get("meter_id")
         self._hass = hass
+        self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+        
+        self._state_class_type = SensorStateClass.TOTAL_INCREASING
+        if self._meter_details.get("physical_medium") == "gas" or self._meter_details.get("physical_medium") == "water":
+            # Gas and Water meters can only increase. A lower value means the meter has been replaced.
+            self._state_class_type = SensorStateClass.TOTAL_INCREASING
+        if self._meter_details.get("physical_medium") == "electricity":
+            # Recent electricity meters can only increase. But pixometer is used to read old meters, and
+            # old meters can decrease e.g. when supplying current to the grid.
+            self._state_class_type = SensorStateClass.TOTAL
 
     @property
     def state(self):
@@ -191,7 +201,8 @@ class Component(Entity):
             "physical_unit": self._meter_details.get("physical_unit").replace("^3","³").replace("^2","²"),
             "meter_id": self._meter_details.get("meter_id"),
             "description": self._meter_details.get("description"),
-            "image": self._meter_reading.get("image_meta").get("image")
+            "image": self._meter_reading.get("image_meta").get("image"),
+            "state_class": self._state_class_type
         }
 
     @property
@@ -235,12 +246,12 @@ class Component(Entity):
     
     @property
     def state_class(self) -> str:
-        state_class = None
-        if self.device_class == SensorDeviceClass.GAS or self.device_class == SensorDeviceClass.WATER:
+        state_class_type = SensorStateClass.TOTAL_INCREASING
+        if self._meter_details.get("physical_medium") == "gas" or self._meter_details.get("physical_medium") == "water":
             # Gas and Water meters can only increase. A lower value means the meter has been replaced.
-            state_class = SensorStateClass.TOTAL_INCREASING
-        if self.device_class == SensorDeviceClass.ENERGY:
+            state_class_type = SensorStateClass.TOTAL_INCREASING
+        if self._meter_details.get("physical_medium") == "electricity":
             # Recent electricity meters can only increase. But pixometer is used to read old meters, and
             # old meters can decrease e.g. when supplying current to the grid.
-            state_class = SensorStateClass.TOTAL
-        return state_class
+            state_class_type = SensorStateClass.TOTAL
+        return state_class_type
