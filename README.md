@@ -23,6 +23,7 @@ Pixometer app [Android](https://play.google.com/store/apps/details?id=com.pixolu
 ## Installation
 - Make sure you have a free [Pixometer account](https://pixometer.io/portal/#/login) created
 - [HACS](https://hacs.xyz/): HACS > Integration > search for Pixometer and install
+  - [![Open your Home Assistant instance and open the repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg?style=flat-square)](https://my.home-assistant.io/redirect/hacs_repository/?owner=myTselection&repository=pixometer&category=integration)
 - Restart Home Assistant
 - Add 'Pixometer' integration via HA Settings > 'Devices and Services' > 'Integrations'
 - Provide Pixometer username and password
