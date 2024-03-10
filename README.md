@@ -9,7 +9,10 @@
 # Pixometer Home Assistant integration
 [Pixometer](https://pixometer.io/info/) Home Assistant custom component. With Pixometer, a mobile app and scan solutions is available for intuitive and efficient meter reading registration. This custom component has been built from the ground up to bring your Pixometer scaned engery meter usage details into Home Assistant to help you towards a better follow up on your usage information. This integration is built against the public website provided by Pixolus Pixometer.
 
-This integration is in no way affiliated with Pixolus or Pixmeter. **Please don't report issues with this integration to Pixometer, they will not be able to support you.**
+This integration is in no way affiliated with Pixolus or Pixmeter. 
+
+| :warning: Please don't report issues with this integration to Pixolus/Pixometer, they will not be able to support you.** |
+| -------------------------------------------------------------------------------------------------------------------------|
 
 Some discussion on this topic can be found within the community discussion [Home Assistant Forum](https://community.home-assistant.io/t/pixometer-integration/285608)
 
