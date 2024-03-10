@@ -11,8 +11,8 @@
 
 This integration is in no way affiliated with Pixolus or Pixmeter. 
 
-| :warning: Please don't report issues with this integration to Pixolus/Pixometer, they will not be able to support you.** |
-| -------------------------------------------------------------------------------------------------------------------------|
+| :warning: Please don't report issues with this integration to Pixolus/Pixometer, they will not be able to support you. |
+| -----------------------------------------------------------------------------------------------------------------------|
 
 Some discussion on this topic can be found within the community discussion [Home Assistant Forum](https://community.home-assistant.io/t/pixometer-integration/285608)
 
